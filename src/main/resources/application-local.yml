@@ -2,6 +2,12 @@ server:
   port: 9050
 
 spring:
+  batch:
+    job:
+      enabled: false        # Spring Boot 시작 시 자동으로 배치 Job 실행하지 않음
+    jdbc:
+      initialize-schema: always  # 배치 메타데이터 테이블을 항상 초기화
+      schema: classpath:org/springframework/batch/core/schema-mysql.sql # MySQL용 테이블 스키마
   mail:
     host: smtp.gmail.com
     port: 587
@@ -17,10 +23,27 @@ spring:
     host: 100.114.34.71
     port: 6380
   datasource:
-    url: jdbc:mysql://100.114.34.71:3322/batch?allowPublicKeyRetrieval=true&useSSL=false
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    batch:
+      url: jdbc:mysql://100.114.34.71:3322/batch?allowPublicKeyRetrieval=true&useSSL=false
+      username: root
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    member:
+      url: jdbc:mysql://100.114.34.71:3320/memberbt?allowPublicKeyRetrieval=true&useSSL=false
+      username: root
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    bottle:
+      url: jdbc:mysql://100.114.34.71:3323/bottle?allowPublicKeyRetrieval=true&useSSL=false
+      username: root
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    wheaterbgm:
+      url: jdbc:mysql://100.114.34.71:3321/wheaterbgm?allowPublicKeyRetrieval=true&useSSL=false
+      username: root
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
 
   kafka:
     bootstrap-servers: 100.114.34.71:9095,100.114.34.71:9096,100.114.34.71:9097  # 여러 브로커 콤마 구분
