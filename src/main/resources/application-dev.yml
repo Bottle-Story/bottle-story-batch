@@ -1,4 +1,10 @@
 spring:
+  batch:
+    job:
+      enabled: false        # Spring Boot 시작 시 자동으로 배치 Job 실행하지 않음
+    jdbc:
+      initialize-schema: always  # 배치 메타데이터 테이블을 항상 초기화
+      schema: classpath:org/springframework/batch/core/schema-mysql.sql # MySQL용 테이블 스키마
   mail:
     host: smtp.gmail.com
     port: 587
@@ -14,10 +20,26 @@ spring:
     host: ${REDIS_HOST}
     port: 6380
   datasource:
-    url: ${BATCH_DEV_DB_URL}
-    username: ${BATCH_DEV_DB_USER_NAME}
-    password: ${BATCH_DEV_DB_USER_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    batch:
+      url: ${BATCH_DEV_DB_URL}
+      username: ${BATCH_DEV_DB_USER_NAME}
+      password: ${BATCH_DEV_DB_USER_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    member:
+      url: ${MEMBER_DEV_DB_URL}
+      username: ${BATCH_DEV_DB_USER_NAME}
+      password: ${BATCH_DEV_DB_USER_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    bottle:
+      url: ${BOTTLE_DEV_DB_URL}
+      username: ${BOTTLE_DEV_DB_USER_NAME}
+      password: ${BOTTLE_DEV_DB_USER_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    wheaterbgm:
+      url: ${WHEATHER_BGM_DEV_DB_URL}
+      username: ${WHEATHER_BGM_DEV_DB_USER_NAME}
+      password: ${WHEATHER_BGM_DEV_DB_USER_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
 
   kafka:
     bootstrap-servers: ${BROKER_CLUSTERS}
