@@ -24,22 +24,22 @@ spring:
     port: 6380
   datasource:
     batch:
-      url: jdbc:mysql://100.114.34.71:3322/batch?allowPublicKeyRetrieval=true&useSSL=false
+      jdbc-url: jdbc:mysql://100.114.34.71:3322/batch?allowPublicKeyRetrieval=true&useSSL=false
       username: root
       password: 1234
       driver-class-name: com.mysql.cj.jdbc.Driver
     member:
-      url: jdbc:mysql://100.114.34.71:3320/memberbt?allowPublicKeyRetrieval=true&useSSL=false
+      jdbc-url: jdbc:mysql://100.114.34.71:3320/memberbt?allowPublicKeyRetrieval=true&useSSL=false
       username: root
       password: 1234
       driver-class-name: com.mysql.cj.jdbc.Driver
     bottle:
-      url: jdbc:mysql://100.114.34.71:3323/bottle?allowPublicKeyRetrieval=true&useSSL=false
+      jdbc-url: jdbc:mysql://100.114.34.71:3323/bottle?allowPublicKeyRetrieval=true&useSSL=false
       username: root
       password: 1234
       driver-class-name: com.mysql.cj.jdbc.Driver
     wheaterbgm:
-      url: jdbc:mysql://100.114.34.71:3321/wheaterbgm?allowPublicKeyRetrieval=true&useSSL=false
+      jdbc-url: jdbc:mysql://100.114.34.71:3321/wheaterbgm?allowPublicKeyRetrieval=true&useSSL=false
       username: root
       password: 1234
       driver-class-name: com.mysql.cj.jdbc.Driver
