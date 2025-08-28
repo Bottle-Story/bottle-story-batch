@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 public class DataSourceConfig {
 
     // ---------------- Batch DB ----------------
-    @Bean(name = "batchDataSource")
+    @Bean(name = "dataSource")
     @BatchDataSource
     @ConfigurationProperties(prefix = "spring.datasource.batch")
     @Primary
@@ -112,6 +112,12 @@ public class DataSourceConfig {
     }
 
     // ---------------- 트랜잭션 매니저 ----------------
+
+    @Bean(name = "transactionManager")
+    @Primary
+    public DataSourceTransactionManager batchTxManager(@Qualifier("dataSource") DataSource ds) {
+        return new DataSourceTransactionManager(ds);
+    }
     @Bean
     public DataSourceTransactionManager memberTxManager(@Qualifier("memberDataSource") DataSource ds) {
         return new DataSourceTransactionManager(ds);
