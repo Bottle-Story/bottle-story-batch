@@ -28,6 +28,7 @@ public class ExpiredMemberReader implements ItemReader<String> {
     public String read() {
         LocalDateTime startTime = LocalDateTime.now();
         log.info("만료회원 조회 시작: {}", startTime);
+        log.info("타임={}",System.currentTimeMillis());
 
         if (iterator == null) {
             Set<Object> expired = redisTemplate.opsForZSet()

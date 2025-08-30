@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.builder.JobBuilderHelper;
 import org.springframework.batch.core.repository.JobRepository;
@@ -32,43 +33,46 @@ public class BatchJobConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
-    private final ExpiredMemberReader reader;
+
     private final ExpiredMemberProcessor processor;
     private final ExpiredMemberWriter writer;
 
-    private final ActiveMemberReader activeMemberReader;
     private final ActiveMemberProcessor activeMemberProcessor;
     private final ActiveMemberWriter activeMemberWriter;
 
     //---------------------------만료회원 세션종료 배치---------------------------//
     @Bean
-    public Job expiredMemberJob() {
+    public Job expiredMemberJob(Step expiredMemberStep) {
         return new JobBuilder("expiredMemberJob", jobRepository)
-                .start(expiredMemberStep())
+                .start(expiredMemberStep) // Bean으로 주입받음
                 .build();
     }
 
     @Bean
-    public Step expiredMemberStep() {
+    public Step expiredMemberStep(ExpiredMemberReader expiredMemberReader) {
         return new StepBuilder("expiredMemberStep", jobRepository)
                 .<String, BatchExprMemDTO>chunk(100, transactionManager)
-                .reader(reader)
+                .reader(expiredMemberReader)
                 .processor(processor)
                 .writer(writer)
                 .build();
     }
 
-//활성화 회원 전송 - > 날씨업데이트
-
     @Bean
-    public Job activeMemberJob() {
+    @StepScope
+    public ExpiredMemberReader expiredMemberReader(org.springframework.data.redis.core.RedisTemplate<String,Object> redisTemplate) {
+        return new ExpiredMemberReader(redisTemplate);
+    }
+    //---------------------------활성회원 배치---------------------------//
+    @Bean
+    public Job activeMemberJob(Step activeMemberStep) {
         return new JobBuilder("activeMemberJob", jobRepository)
-                .start(activeMemberStep())
+                .start(activeMemberStep)
                 .build();
     }
 
     @Bean
-    public Step activeMemberStep() {
+    public Step activeMemberStep(ActiveMemberReader activeMemberReader) {
         return new StepBuilder("activeMemberStep", jobRepository)
                 .<String, BatchActiveMemDTO>chunk(100, transactionManager)
                 .reader(activeMemberReader)
@@ -76,4 +80,13 @@ public class BatchJobConfig {
                 .writer(activeMemberWriter)
                 .build();
     }
+
+    @Bean
+    @StepScope
+    public ActiveMemberReader activeMemberReader(org.springframework.data.redis.core.RedisTemplate<String,Object> redisTemplate,
+                                                 com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
+        return new ActiveMemberReader(redisTemplate, objectMapper);
+    }
 }
+
+
