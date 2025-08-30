@@ -5,18 +5,28 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
-
+/**
+ * 2025-08-30
+ * @author 김용준
+ * 배치에서 사용하는 데이타소스, 트랜잭션매니저, mybatis 컨피그 등 설정을 한다.
+ */
 @Configuration
 @EnableBatchProcessing
 public class DataSourceConfig {
@@ -132,6 +142,23 @@ public class DataSourceConfig {
     public DataSourceTransactionManager wheaterbgmTxManager(@Qualifier("wheaterbgmDataSource") DataSource ds) {
         return new DataSourceTransactionManager(ds);
     }
-
-
+//    @Bean
+//    public boolean initializeBatchSchema(@Qualifier("dataSource") DataSource ds) {
+//        ResourceDatabasePopulator populator = new ResourceDatabasePopulator(new ClassPathResource("org/springframework/batch/core/schema-mysql.sql"));
+//        DatabasePopulatorUtils.execute(populator, ds);
+//        return true;
+//    }
+//    // ---------------- 잡 리포지토리----------------
+//
+//    @Bean
+//    public JobRepository batchJobRepository(@Qualifier("dataSource") DataSource ds,
+//                                            @Qualifier("transactionManager")  PlatformTransactionManager tm) throws Exception {
+//        JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
+//        factory.setDataSource(ds);
+//        factory.setTransactionManager(tm);
+//        factory.setIsolationLevelForCreate("ISOLATION_SERIALIZABLE");
+//        factory.setTablePrefix("BATCH_"); // 테이블 prefix
+//        factory.afterPropertiesSet();
+//        return factory.getObject();
+//    }
 }
