@@ -5,9 +5,9 @@ spring:
   batch:
     job:
       enabled: false        # Spring Boot 시작 시 자동으로 배치 Job 실행하지 않음
-    jdbc:
-      initialize-schema: always  # 배치 메타데이터 테이블을 항상 초기화
-      schema: classpath:org/springframework/batch/core/schema-mysql.sql # MySQL용 테이블 스키마
+#    jdbc:
+#      initialize-schema: always  # 배치 메타데이터 테이블을 항상 초기화
+#      schema: classpath:org/springframework/batch/core/schema-mysql.sql # MySQL용 테이블 스키마
   mail:
     host: smtp.gmail.com
     port: 587
