@@ -1,8 +1,12 @@
 package com.kyj.fmk.config;
 
+import com.kyj.fmk.model.batch.BatchActiveMemDTO;
 import com.kyj.fmk.model.batch.BatchExprMemDTO;
+import com.kyj.fmk.processor.ActiveMemberProcessor;
 import com.kyj.fmk.processor.ExpiredMemberProcessor;
+import com.kyj.fmk.reader.ActiveMemberReader;
 import com.kyj.fmk.reader.ExpiredMemberReader;
+import com.kyj.fmk.writer.ActiveMemberWriter;
 import com.kyj.fmk.writer.ExpiredMemberWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -32,6 +36,10 @@ public class BatchJobConfig {
     private final ExpiredMemberProcessor processor;
     private final ExpiredMemberWriter writer;
 
+    private final ActiveMemberReader activeMemberReader;
+    private final ActiveMemberProcessor activeMemberProcessor;
+    private final ActiveMemberWriter activeMemberWriter;
+
     //---------------------------만료회원 세션종료 배치---------------------------//
     @Bean
     public Job expiredMemberJob() {
@@ -47,6 +55,25 @@ public class BatchJobConfig {
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
+                .build();
+    }
+
+//활성화 회원 전송 - > 날씨업데이트
+
+    @Bean
+    public Job activeMemberJob() {
+        return new JobBuilder("activeMemberJob", jobRepository)
+                .start(activeMemberStep())
+                .build();
+    }
+
+    @Bean
+    public Step activeMemberStep() {
+        return new StepBuilder("activeMemberStep", jobRepository)
+                .<String, BatchActiveMemDTO>chunk(100, transactionManager)
+                .reader(activeMemberReader)
+                .processor(activeMemberProcessor)
+                .writer(activeMemberWriter)
                 .build();
     }
 }

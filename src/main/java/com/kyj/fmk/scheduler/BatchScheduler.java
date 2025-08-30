@@ -18,6 +18,8 @@ public class BatchScheduler {
 
     private final JobLauncher jobLauncher;
     private final Job expiredMemberJob;
+    private final Job activeMemberJob;
+
 
     /**
      * 만료된 회원을 조회하여 카프카로 이벤트 전송 (5분마다)
@@ -31,6 +33,23 @@ public class BatchScheduler {
                 .toJobParameters();
 
         jobLauncher.run(expiredMemberJob,
+                jobParameters);
+    }
+
+
+
+    /**
+     * 활성화 회원을 조회하여 카프카로 이벤트 전송 (5분마다)
+     * @throws Exception
+     */
+    @Scheduled(cron = "0 31 * * * ?")
+    public void activeMemJob() throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("run.id", System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(activeMemberJob,
                 jobParameters);
     }
 }
