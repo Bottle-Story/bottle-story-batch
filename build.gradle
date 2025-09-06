@@ -42,6 +42,7 @@ configurations.all {
 dependencies {
 	dependencies {
 		implementation 'com.kyj.fmk:bottle-security-dev:0.0.1-SNAPSHOT'
+        implementation 'org.springframework.boot:spring-boot-starter-batch'
 
 		annotationProcessor 'org.projectlombok:lombok'
 	}
